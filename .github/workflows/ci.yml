@@ -30,3 +30,22 @@ jobs:
         run: |
           deps=$(go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./brick | grep -v '^github.com/agentiik/brick-sdk' || true)
           if [ -n "$deps" ]; then echo "brick imports outside the standard library:"; echo "$deps"; exit 1; fi
+
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # The oldest Python the helper promises, and the newest.
+        python: ['3.9', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - working-directory: python
+        run: python -m unittest discover -s tests -v
+      # Installable as a package, with no dependency pulled in.
+      - working-directory: python
+        run: |
+          python -m pip install --quiet .
+          python -c "import agentiik_brick, importlib.metadata as m; assert not m.requires('agentiik-brick'), m.requires('agentiik-brick')"

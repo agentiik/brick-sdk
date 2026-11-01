@@ -36,6 +36,17 @@ if err := brick.Emit("out", items); err != nil {
 
 Numbers in `data` are decoded as `json.Number`, so an amount or an identifier keeps its digits. The module depends on the standard library alone.
 
+## Python
+
+```python
+import agentiik_brick as brick
+
+items = brick.items("in")
+brick.emit("out", items)
+```
+
+The same functions in Python's spelling: `read`, `items`, `emit`, `attach`, `params`, `param(name, default)`, `context`, `secret`, `fail`, `retry`, `refuse`, `exit`, `exit_code`. Items are plain dictionaries, a refused envelope raises `TooLarge`, and an absent secret is `None`. It supports Python 3.9 and later, and the standard library is all it imports.
+
 ## One behaviour in three languages
 
 `conformance/scenarios.json` holds what every helper does: the exit codes, how a spilled value is named, encoded and digested, which envelopes are refused. Each language's tests read it, so a scenario added there is a scenario all three are held to.
