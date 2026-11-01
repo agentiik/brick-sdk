@@ -116,7 +116,7 @@ def _encode(value: Any) -> bytes:
     <, > and & escaped, and the two line separators JavaScript cannot hold raw. It is what a
     value is measured and spilled as."""
     s = json.dumps(value, separators=(",", ":"), sort_keys=True, ensure_ascii=False)
-    for raw, escaped in (("<", "\\u003c"), (">", "\\u003e"), ("&", "\\u0026"), (" ", "\\u2028"), (" ", "\\u2029")):
+    for raw, escaped in (("<", "\\u003c"), (">", "\\u003e"), ("&", "\\u0026"), ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
         s = s.replace(raw, escaped)
     return s.encode("utf-8")
 
