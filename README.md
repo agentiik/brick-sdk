@@ -45,7 +45,7 @@ items = brick.items("in")
 brick.emit("out", items)
 ```
 
-The same functions in Python's spelling: `read`, `items`, `emit`, `attach`, `params`, `param(name, default)`, `context`, `secret`, `fail`, `retry`, `refuse`, `exit`, `exit_code`. Items are plain dictionaries, a refused envelope raises `TooLarge`, and an absent secret is `None`. It supports Python 3.9 and later, and the standard library is all it imports.
+The same functions in Python's spelling: `read`, `items`, `emit`, `attach`, `params`, `param(name, default)`, `context`, `secret`, `fail`, `retry`, `refuse`, `exit`, `exit_code`. Items are plain dictionaries, a refused envelope raises `TooLarge`, and an absent secret is `None`. It supports Python 3.10 and later, and the standard library is all it imports.
 
 ## TypeScript
 
