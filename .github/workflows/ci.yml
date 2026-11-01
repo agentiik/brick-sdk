@@ -73,3 +73,21 @@ jobs:
           npm run build
           node -e "import('./dist/index.js').then(m => { if (typeof m.emit !== 'function') process.exit(1) })"
           if grep -hoE "from \"[^\"]+\"" dist/index.js | grep -v '"node:'; then echo "dist imports outside Node's standard library"; exit 1; fi
+
+  templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+      # Each template carries the helper whole, so that a brick written from it needs nothing
+      # installed; the copy is the helper, byte for byte, or the template ships an older one.
+      - name: the templates carry this helper
+        run: |
+          cmp python/src/agentiik_brick/__init__.py templates/python/agentiik_brick.py
+          cmp typescript/src/index.ts templates/typescript/brick.ts
+      - name: install agk
+        run: go install github.com/agentiik/agentiik/cmd/agk@main
+      - name: build each template and run its cases
+        run: templates/try.sh
