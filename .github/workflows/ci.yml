@@ -49,3 +49,27 @@ jobs:
         run: |
           python -m pip install --quiet .
           python -c "import agentiik_brick, importlib.metadata as m; assert not m.requires('agentiik-brick'), m.requires('agentiik-brick')"
+
+  typescript:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # The oldest Node the helper promises, which runs TypeScript with --experimental-strip-types,
+        # and the current one.
+        node: ['22', '24']
+    defaults:
+      run:
+        working-directory: typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      # Built as it would be published, with nothing but Node's own modules imported.
+      - run: |
+          npm run build
+          node -e "import('./dist/index.js').then(m => { if (typeof m.emit !== 'function') process.exit(1) })"
+          if grep -hoE "from \"[^\"]+\"" dist/index.js | grep -v '"node:'; then echo "dist imports outside Node's standard library"; exit 1; fi

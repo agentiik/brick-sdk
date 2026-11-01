@@ -1,0 +1,23 @@
+{
+  "name": "@agentiik/brick",
+  "version": "0.8.0",
+  "description": "Optional helpers for the Agentiik brick contract: envelopes, parameters, run context, secrets, size rules and exit codes.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "files": ["dist"],
+  "engines": { "node": ">=22" },
+  "repository": { "type": "git", "url": "git+https://github.com/agentiik/brick-sdk.git", "directory": "typescript" },
+  "homepage": "https://agentiik.github.io/docs#brick",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "node --experimental-strip-types --test test/"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "typescript": "5.9.3"
+  }
+}

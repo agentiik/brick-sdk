@@ -47,6 +47,17 @@ brick.emit("out", items)
 
 The same functions in Python's spelling: `read`, `items`, `emit`, `attach`, `params`, `param(name, default)`, `context`, `secret`, `fail`, `retry`, `refuse`, `exit`, `exit_code`. Items are plain dictionaries, a refused envelope raises `TooLarge`, and an absent secret is `None`. It supports Python 3.9 and later, and the standard library is all it imports.
 
+## TypeScript
+
+```ts
+import * as brick from "@agentiik/brick";
+
+const items = brick.items("in");
+brick.emit("out", items);
+```
+
+The same functions again: `read`, `items`, `emit`, `attach`, `params`, `param`, `context`, `secret`, `fail`, `retry`, `refuse`, `exit`, `exitCode`. A refused envelope throws `TooLarge`, and an absent parameter or secret is `undefined`. It runs on Node 22 and later and imports nothing but Node's own modules. JavaScript reads every number as a double, so an integer above 2^53 does not survive a passthrough here as it does in Go and Python.
+
 ## One behaviour in three languages
 
 `conformance/scenarios.json` holds what every helper does: the exit codes, how a spilled value is named, encoded and digested, which envelopes are refused. Each language's tests read it, so a scenario added there is a scenario all three are held to.
