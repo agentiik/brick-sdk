@@ -58,6 +58,10 @@ brick.emit("out", items);
 
 The same functions again: `read`, `items`, `emit`, `attach`, `params`, `param`, `context`, `secret`, `fail`, `retry`, `refuse`, `exit`, `exitCode`. A refused envelope throws `TooLarge`, and an absent parameter or secret is `undefined`. It runs on Node 22 and later and imports nothing but Node's own modules. JavaScript reads every number as a double, so an integer above 2^53 does not survive a passthrough here as it does in Go and Python.
 
+## Templates
+
+`templates/go`, `templates/python` and `templates/typescript` are what `agk brick init` writes: a manifest, the brick, a `Dockerfile` and two cases, one it publishes and one it refuses with 120, the same in all three languages. `{{name}}` is the one thing substituted. The Python and TypeScript templates carry the helper whole, `agentiik_brick.py` and `brick.ts`, so a brick written from them needs nothing installed and no registry; CI holds the copies to the helpers here byte for byte. The Go template requires the module at the release. `templates/try.sh` writes each one as `agk brick init` would, builds it and runs its cases with `agk brick test`.
+
 ## One behaviour in three languages
 
 `conformance/scenarios.json` holds what every helper does: the exit codes, how a spilled value is named, encoded and digested, which envelopes are refused. Each language's tests read it, so a scenario added there is a scenario all three are held to.
