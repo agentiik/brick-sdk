@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         # The oldest Python the helper promises, and the newest.
-        python: ['3.9', '3.13']
+        python: ['3.10', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
