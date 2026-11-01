@@ -1,0 +1,55 @@
+{
+  "$comment": "What every helper does, read by the tests of all three, so that name for name they also behave alike. A helper passes when each scenario holds in its own language.",
+  "limits": { "inline_max_bytes": 262144, "envelope_max_bytes": 4194304, "max_items": 100000 },
+  "exit": [
+    [1, 1], [42, 42], [99, 99], [100, 100], [119, 119], [120, 120],
+    [0, 1], [-1, 1], [121, 1], [122, 1], [124, 1], [125, 1], [137, 1], [255, 1]
+  ],
+  "segment": [
+    ["inv-7", "inv-7"], ["inv/7", "inv_7"], ["a b.c", "a_b.c"], ["", "field"], [".", "field"], ["..", "field"],
+    ["été", "_t_"],
+    ["0123456789012345678901234567890123456789012345678901234567890123456789", "0123456789012345678901234567890123456789012345678901234567890123"]
+  ],
+  "encode": [
+    [{ "b": 1, "a": "x" }, "{\"a\":\"x\",\"b\":1}"],
+    ["<a&b>", "\"\\u003ca\\u0026b\\u003e\""],
+    [[1, "two", null, true], "[1,\"two\",null,true]"],
+    ["café", "\"café\""]
+  ],
+  "spill": [
+    {
+      "name": "a value above the threshold leaves data, one at it stays",
+      "task": { "run_id": "01M2AAZ9G62NQXFAFCXKRPJEH5", "step": "render", "attempt": 1 },
+      "limits": { "inline_max_bytes": 16 },
+      "port": "out",
+      "items": [{ "id": "inv/7", "data": { "at": "aaaaaaaaaaaaaa", "body": "bbbbbbbbbbbbbbb" }, "files": [] }],
+      "want": [{
+        "id": "inv/7",
+        "data": { "at": "aaaaaaaaaaaaaa" },
+        "files": [{
+          "name": "inv_7-body.json",
+          "uri": "agk://run/01M2AAZ9G62NQXFAFCXKRPJEH5/render/out/inv_7-body.json",
+          "media_type": "application/json",
+          "size": 17,
+          "sha256": "88e18edda71dae2d51227f02a6c6093c4ca0c32bc0a2a159ff8e927a31b318f4"
+        }]
+      }]
+    },
+    {
+      "name": "an object is measured and written with its keys sorted",
+      "task": { "run_id": "r", "step": "s", "attempt": 2 },
+      "limits": { "inline_max_bytes": 8 },
+      "port": "ok",
+      "items": [{ "id": "a", "data": { "n": 1, "o": { "z": 1, "a": 2 } }, "files": [] }],
+      "want": [{
+        "id": "a",
+        "data": { "n": 1 },
+        "files": [{ "name": "a-o.json", "uri": "agk://run/r/s/ok/a-o.json", "media_type": "application/json", "size": 13, "sha256": "c2985c5ba6f7d2a55e768f92490ca09388e95bc4cccb9fdf11b15f4d42f93e73" }]
+      }]
+    }
+  ],
+  "refuse": [
+    { "name": "more items than max_items", "limits": { "max_items": 2 }, "items": 3, "says": "max_items" },
+    { "name": "an envelope above envelope_max_bytes once spilled", "limits": { "inline_max_bytes": 64, "envelope_max_bytes": 512 }, "items": 20, "says": "envelope_max_bytes" }
+  ]
+}

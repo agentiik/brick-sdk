@@ -1,0 +1,32 @@
+# Each helper is tested in its own language against the scenarios in conformance/, so that the
+# three keep the same surface and the same behaviour rather than three readings of the contract.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+      - run: go build ./...
+      - run: go vet ./...
+      - run: go test ./... -race
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then echo "gofmt would rewrite:"; echo "$unformatted"; exit 1; fi
+      # The helper depends on the standard library alone: a brick that imports it must not
+      # inherit anybody's dependency, least of all the engine's.
+      - name: standard library only
+        run: |
+          deps=$(go list -deps -f '{{if not .Standard}}{{.ImportPath}}{{end}}' ./brick | grep -v '^github.com/agentiik/brick-sdk' || true)
+          if [ -n "$deps" ]; then echo "brick imports outside the standard library:"; echo "$deps"; exit 1; fi
